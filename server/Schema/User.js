@@ -30,7 +30,7 @@ let profile_imgs_collections_list = [
 
 const userSchema = Schema(
   {
-    personal_info: {
+    personalInfo: {
       fullName: {
         type: String,
         lowercase: true,
