@@ -1,6 +1,6 @@
 import { Navbar } from "./components";
 import { Routes, Route } from "react-router-dom";
-import { Home, SignIn, SignUp, UserAuthForm } from "./pages";
+import { Home, UserAuthForm } from "./pages";
 
 const App = () => {
   return (

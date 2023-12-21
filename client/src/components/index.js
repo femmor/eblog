@@ -22,3 +22,4 @@ export { default as Tags } from "./Tags";
 export { default as Tools } from "./Tools";
 export { default as UserCard } from "./UserCard";
 export { default as UserNavigation } from "./UserNavigation";
+export { default as AnimationWrapper } from "./AnimationWrapper";
