@@ -78,8 +78,43 @@ const signUp = (req, res) => {
     @desc Sign in user
     @access Public
 */
-const signIn = (req, res) => {
-  return res.json(req.body);
+const signIn = async (req, res) => {
+  const { email, password } = req.body;
+
+  // Check if the email exists in the db
+  await User.findOne({
+    "personalInfo.email": email,
+  })
+    .then((user) => {
+      if (!user) {
+        return res.status(404).json({
+          error: `The email '${email}' was not found.`,
+        });
+      }
+
+      // Check if the password is correct
+      bcrypt.compare(password, user.personalInfo.password, (err, result) => {
+        if (err) {
+          return res.status(403).json({
+            error: "Something went wrong while logging in, please try again!",
+          });
+        }
+
+        if (!result) {
+          return res.status(403).json({
+            error: "Incorrect password",
+          });
+        } else {
+          return res.status(200).json(formatDataToSend(user));
+        }
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+      return res.status(500).json({
+        error: err.message,
+      });
+    });
 };
 
 export { signUp, signIn };
