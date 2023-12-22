@@ -19,6 +19,12 @@ const Navbar = () => {
     setUserNavVisibility((currentVal) => !currentVal);
   };
 
+  const handleBlur = () => {
+    setTimeout(() => {
+      setUserNavVisibility(false);
+    }, 200);
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -69,11 +75,12 @@ const Navbar = () => {
                 </button>
               </Link>
 
-              <div className="relative">
-                <button
-                  className="w-12 h-12 mt-1"
-                  onClick={handleUserNavVisiblity}
-                >
+              <div
+                className="relative"
+                onClick={handleUserNavVisiblity}
+                onBlur={handleBlur}
+              >
+                <button className="w-12 h-12 mt-1">
                   <img
                     src={profileImg}
                     alt=""
