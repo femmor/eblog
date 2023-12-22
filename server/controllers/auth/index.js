@@ -49,8 +49,8 @@ const signUp = (req, res) => {
 
     await user
       .save()
-      .then((u) => {
-        return res.status(200).json(formatDataToSend(u));
+      .then((userInfo) => {
+        return res.status(200).json(formatDataToSend(userInfo));
       })
       .catch((err) => {
         if (err.code === 11000) {

@@ -1,5 +1,6 @@
 import { nanoid } from "nanoid";
 import User from "../Schema/User.js";
+import jwt from "jsonwebtoken";
 
 // Create a unique username
 export const generateUsername = async (email) => {
@@ -17,7 +18,18 @@ export const generateUsername = async (email) => {
 };
 
 export const formatDataToSend = (user) => {
+  const access_token = jwt.sign(
+    {
+      id: user._id,
+    },
+    process.env.JWT_ACCESS_KEY,
+    {
+      expiresIn: "1d",
+    }
+  );
+
   return {
+    access_token,
     profileImg: user.personalInfo.profileImg,
     username: user.personalInfo.username,
     fullName: user.personalInfo.fullName,

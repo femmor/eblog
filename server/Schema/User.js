@@ -22,9 +22,13 @@ let profile_imgs_name_list = [
   "Felix",
   "Kiki",
 ];
+
 let profile_imgs_collections_list = [
-  "notionists-neutral",
+  "adventurer",
   "adventurer-neutral",
+  "avataaars",
+  "avataaars-neutral",
+  "big-smile",
   "fun-emoji",
 ];
 
