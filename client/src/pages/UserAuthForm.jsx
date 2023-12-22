@@ -1,11 +1,19 @@
-import { Link } from "react-router-dom";
+import { Link, Navigate } from "react-router-dom";
 import { AnimationWrapper, Input } from "../components";
 import googleIcon from "../images/google.png";
 import { toast } from "react-hot-toast";
 import axios from "axios";
 import { storeInSession } from "../common/session";
+import { useContext } from "react";
+import { UserContext } from "../App";
 
 const UserAuthForm = ({ type }) => {
+  const {
+    userAuth: { access_token },
+    setUserAuth,
+  } = useContext(UserContext);
+
+  // Submits user info to the server or authentication
   const submitUserAuthToServer = async (serverRoute, formData) => {
     try {
       const response = await axios.post(
@@ -14,12 +22,13 @@ const UserAuthForm = ({ type }) => {
       );
       const { data } = response;
       storeInSession("user", JSON.stringify(data));
-      console.log(sessionStorage);
+      setUserAuth(data);
     } catch (error) {
       toast.error(error.response.data.error);
     }
   };
 
+  // Handles user authentication submission
   const handleSubmit = (e) => {
     e.preventDefault();
 
@@ -62,7 +71,9 @@ const UserAuthForm = ({ type }) => {
     submitUserAuthToServer(serverRoute, formData);
   };
 
-  return (
+  return access_token ? (
+    <Navigate to="/" />
+  ) : (
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center">
         <form id="authForm" className="w-[80%] max-w-[400px]">
