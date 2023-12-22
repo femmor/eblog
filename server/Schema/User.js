@@ -26,8 +26,6 @@ let profile_imgs_name_list = [
 let profile_imgs_collections_list = [
   "adventurer",
   "adventurer-neutral",
-  "avataaars",
-  "avataaars-neutral",
   "big-smile",
   "fun-emoji",
 ];
