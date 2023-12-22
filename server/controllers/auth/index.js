@@ -2,8 +2,8 @@ import bcrypt from "bcrypt";
 import User from "../../Schema/User.js";
 import { generateUsername, formatDataToSend } from "../../helpers/utils.js";
 
-let emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // Validates email to include @ symbol and a valid domain
-let passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // Validates password with 6 - 20 characters, 1 uppercase letter and 1 lowercase letter
+const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // Validates email to include @ symbol and a valid domain
+const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // Validates password with 6 - 20 characters, 1 uppercase letter and 1 lowercase letter
 
 /* 
     @title Sign Up

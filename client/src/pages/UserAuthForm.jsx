@@ -1,12 +1,56 @@
 import { Link } from "react-router-dom";
 import { AnimationWrapper, Input } from "../components";
 import googleIcon from "../images/google.png";
+import { useRef } from "react";
+import { toast } from "react-hot-toast";
 
 const UserAuthForm = ({ type }) => {
+  const authFormRef = useRef(null);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+
+    // Get formData
+    let form = new FormData(authFormRef.current);
+    let formData = {};
+
+    for (let [key, value] of form.entries()) {
+      formData[key] = value;
+    }
+
+    // Form validation
+    const { fullName, email, password } = formData;
+
+    const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/;
+    const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/;
+
+    if (fullName) {
+      if (fullName.length < 3) {
+        return toast.error("Full name must be at least 3 characters long");
+      }
+    }
+
+    if (!email.length) {
+      return toast.error("Please enter an email");
+    }
+
+    if (!emailRegex.test(email)) {
+      return toast.error("Email is invalid");
+    }
+
+    if (!passwordRegex?.test(password)) {
+      return toast.error(
+        "Password should be 6 to 20 characters long with a numeric, 1 lowercase and 1 uppercase letter"
+      );
+    }
+
+    console.log(formData);
+  };
+
   return (
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center">
-        <form className="w-[80%] max-w-[400px]">
+        <form ref={authFormRef} className="w-[80%] max-w-[400px]">
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {type === "sign in" ? "welcome back" : "join us today"}
           </h1>
@@ -30,7 +74,11 @@ const UserAuthForm = ({ type }) => {
             name="password"
             placeholder="Enter password"
           />
-          <button className="btn-dark center mt-14" type="submit">
+          <button
+            className="btn-dark center mt-14"
+            type="submit"
+            onClick={handleSubmit}
+          >
             {type}
           </button>
           <div className="relative w-full gap-2 flex items-center my-10 opacity-10 uppercase text-black font-bold">
