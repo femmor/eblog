@@ -1,17 +1,32 @@
 import { Link } from "react-router-dom";
 import { AnimationWrapper, Input } from "../components";
 import googleIcon from "../images/google.png";
-import { useRef } from "react";
 import { toast } from "react-hot-toast";
+import axios from "axios";
+import { storeInSession } from "../common/session";
 
 const UserAuthForm = ({ type }) => {
-  const authFormRef = useRef(null);
+  const submitUserAuthToServer = async (serverRoute, formData) => {
+    try {
+      const response = await axios.post(
+        `${import.meta.env.VITE_SERVER_DOMAIN}/auth/${serverRoute}`,
+        formData
+      );
+      const { data } = response;
+      storeInSession("user", JSON.stringify(data));
+      console.log(sessionStorage);
+    } catch (error) {
+      toast.error(error.response.data.error);
+    }
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
+    let serverRoute = type === "sign in" ? "signin" : "signup";
+
     // Get formData
-    let form = new FormData(authFormRef.current);
+    let form = new FormData(authForm);
     let formData = {};
 
     for (let [key, value] of form.entries()) {
@@ -44,13 +59,13 @@ const UserAuthForm = ({ type }) => {
       );
     }
 
-    console.log(formData);
+    submitUserAuthToServer(serverRoute, formData);
   };
 
   return (
     <AnimationWrapper keyValue={type}>
       <section className="h-cover flex items-center justify-center">
-        <form ref={authFormRef} className="w-[80%] max-w-[400px]">
+        <form id="authForm" className="w-[80%] max-w-[400px]">
           <h1 className="text-4xl font-gelasio capitalize text-center mb-24">
             {type === "sign in" ? "welcome back" : "join us today"}
           </h1>
