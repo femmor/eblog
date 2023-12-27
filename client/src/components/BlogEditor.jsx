@@ -1,7 +1,14 @@
 import { Link } from "react-router-dom";
+import AnimationWrapper from "./AnimationWrapper";
 import logo from "../images/logo.png";
+import defaultBanner from "../images/blog banner.png";
 
 const BlogEditor = () => {
+  const handleBannerUpload = (e) => {
+    let img = e.target.files[0];
+    console.log(img);
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -14,6 +21,24 @@ const BlogEditor = () => {
           <button className="btn-light py-2">Save Draft</button>
         </div>
       </nav>
+      <AnimationWrapper>
+        <section>
+          <div className="mx-auto max-w-[900px] w-full">
+            <div className="relative aspect-video hover:opacity-80 bg-white border-4 border-grey">
+              <label htmlFor="uploadBanner" className="cursor-pointer z-20">
+                <img src={defaultBanner} />
+                <input
+                  type="file"
+                  id="uploadBanner"
+                  accept=".png,.jpg,.jpeg"
+                  hidden
+                  onChange={handleBannerUpload}
+                />
+              </label>
+            </div>
+          </div>
+        </section>
+      </AnimationWrapper>
     </>
   );
 };
