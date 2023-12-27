@@ -1,6 +1,6 @@
 import { Navbar } from "./components";
 import { Routes, Route } from "react-router-dom";
-import { UserAuthForm } from "./pages";
+import { Editor, UserAuthForm } from "./pages";
 import { Toaster } from "react-hot-toast";
 import { createContext, useEffect, useState } from "react";
 import { getFromSession } from "./common/session";
@@ -26,6 +26,7 @@ const App = () => {
       }}
     >
       <Routes>
+        <Route path="/editor" element={<Editor />} />
         <Route path="/" element={<Navbar />}>
           <Route path="/signin" element={<UserAuthForm type="sign in" />} />
           <Route path="/signup" element={<UserAuthForm type="sign up" />} />
