@@ -6,6 +6,7 @@ import axios from "axios";
 import { storeInSession } from "../common/session";
 import { useContext } from "react";
 import { UserContext } from "../App";
+import { authWithGoogle } from "../common/firebase";
 
 const UserAuthForm = ({ type }) => {
   const {
@@ -71,6 +72,25 @@ const UserAuthForm = ({ type }) => {
     submitUserAuthToServer(serverRoute, formData);
   };
 
+  const handleGoogleAuth = async (e) => {
+    e.preventDefault();
+
+    await authWithGoogle()
+      .then((user) => {
+        let serverRoute = "google-auth";
+
+        let formData = {
+          access_token: user.accessToken,
+        };
+
+        submitUserAuthToServer(serverRoute, formData);
+      })
+      .catch((err) => {
+        toast.error("Trouble signing in with google.");
+        return console.log(err);
+      });
+  };
+
   return access_token ? (
     <Navigate to="/" />
   ) : (
@@ -112,7 +132,10 @@ const UserAuthForm = ({ type }) => {
             <p>or</p>
             <hr className="w-1/2 border-black" />
           </div>
-          <button className="btn-dark center flex gap-4 w-[90%] justify-center items-center">
+          <button
+            className="btn-dark center flex gap-4 w-[90%] justify-center items-center"
+            onClick={handleGoogleAuth}
+          >
             <img src={googleIcon} alt="Google icon" className="w-4" />
             {type} with google
           </button>

@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import User from "../../Schema/User.js";
 import { generateUsername, formatDataToSend } from "../../helpers/utils.js";
+import { getAuth } from "firebase-admin/auth";
 
 const emailRegex = /^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/; // Validates email to include @ symbol and a valid domain
 const passwordRegex = /^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{6,20}$/; // Validates password with 6 - 20 characters, 1 uppercase letter and 1 lowercase letter
@@ -92,22 +93,29 @@ const signIn = async (req, res) => {
         });
       }
 
-      // Check if the password is correct
-      bcrypt.compare(password, user.personalInfo.password, (err, result) => {
-        if (err) {
-          return res.status(403).json({
-            error: "Something went wrong while logging in, please try again!",
-          });
-        }
+      if (!user.googleAuth) {
+        // Check if the password is correct
+        bcrypt.compare(password, user.personalInfo.password, (err, result) => {
+          if (err) {
+            return res.status(403).json({
+              error: "Something went wrong while logging in, please try again!",
+            });
+          }
 
-        if (!result) {
-          return res.status(403).json({
-            error: "Incorrect password",
-          });
-        } else {
-          return res.status(200).json(formatDataToSend(user));
-        }
-      });
+          if (!result) {
+            return res.status(403).json({
+              error: "Incorrect password",
+            });
+          } else {
+            return res.status(200).json(formatDataToSend(user));
+          }
+        });
+      } else {
+        return res.status(403).json({
+          error:
+            "Account was created with google. Please try logging in with google.",
+        });
+      }
     })
     .catch((err) => {
       console.log(err);
@@ -117,4 +125,72 @@ const signIn = async (req, res) => {
     });
 };
 
-export { signUp, signIn };
+/* 
+    @title Google authentication
+    @route POST /api/auth/google-auth
+    @desc Sign in user using google authentication
+    @access Public
+*/
+const googleAuthentication = async (req, res) => {
+  let { access_token } = req.body;
+
+  getAuth()
+    .verifyIdToken(access_token)
+    .then(async (decodedUser) => {
+      let { email, name, picture } = decodedUser;
+
+      picture = picture.replace("s96-c", "s384-c");
+
+      let user = await User.findOne({ "personalInfo.email": email })
+        .select(
+          "personalInfo.fullName personalInfo.username personalInfo.profileImg googleAuth"
+        )
+        .then((doc) => doc || null)
+        .catch((err) =>
+          res.status(500).json({
+            error: err.message,
+          })
+        );
+
+      if (user) {
+        if (!user.googleAuth) {
+          return res.status(400).json({
+            error:
+              "This user was signed up without google. Please log in with password to access your account.",
+          });
+        }
+      } else {
+        let username = await generateUsername(email);
+        user = new User({
+          personalInfo: {
+            fullName: name,
+            email,
+            profileImg: picture,
+            username,
+          },
+          googleAuth: true,
+        });
+
+        await user
+          .save()
+          .then((u) => {
+            user = u;
+          })
+          .catch((err) =>
+            res.status(500).json({
+              error: err.message,
+            })
+          );
+      }
+
+      return res.status(200).json(formatDataToSend(user));
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        error:
+          "Failed to authenticate you with google. Please try again with another google account.",
+      });
+    });
+};
+
+export { signUp, signIn, googleAuthentication };
