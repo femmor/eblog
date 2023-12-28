@@ -2,12 +2,12 @@ import { generateUploadUrl } from "../../helpers/aws.js";
 
 /* 
     @title Image Upload Url
-    @route GET /api/post/image-upload-url
+    @route GET /api/v1/post/image-upload-url
     @desc Gets the aws image upload url
     @access Public
 */
-const getImageUploadUrl = (req, res) => {
-  generateUploadUrl()
+const getImageUploadUrl = async (req, res) => {
+  await generateUploadUrl()
     .then((url) =>
       res.status(200).json({
         uploadUrl: url,
