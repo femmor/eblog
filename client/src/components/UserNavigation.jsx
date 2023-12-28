@@ -1,14 +1,14 @@
 import { useContext } from "react";
 import AnimationWrapper from "./AnimationWrapper";
 import { Link, useNavigate } from "react-router-dom";
-import { UserContext } from "../App";
+import { AppContext } from "../App";
 import { removeFromSession } from "../common/session";
 
 const UserNavigation = () => {
   const {
     userAuth: { username },
     setUserAuth,
-  } = useContext(UserContext);
+  } = useContext(AppContext);
 
   const navigate = useNavigate();
 

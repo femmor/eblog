@@ -5,14 +5,14 @@ import { toast } from "react-hot-toast";
 import axios from "axios";
 import { storeInSession } from "../common/session";
 import { useContext } from "react";
-import { UserContext } from "../App";
+import { AppContext } from "../App";
 import { authWithGoogle } from "../common/firebase";
 
 const UserAuthForm = ({ type }) => {
   const {
     userAuth: { access_token },
     setUserAuth,
-  } = useContext(UserContext);
+  } = useContext(AppContext);
 
   // Submits user info to the server or authentication
   const submitUserAuthToServer = async (serverRoute, formData) => {

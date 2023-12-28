@@ -5,10 +5,23 @@ import { Toaster } from "react-hot-toast";
 import { createContext, useEffect, useState } from "react";
 import { getFromSession } from "./common/session";
 
-export const UserContext = createContext({});
+export const AppContext = createContext({});
+
+const blogStructure = {
+  title: "",
+  banner: "",
+  content: "",
+  tags: [],
+  desc: "",
+  author: {
+    personalInfo: {},
+  },
+};
 
 const App = () => {
   const [userAuth, setUserAuth] = useState({});
+  const [editorState, setEditorState] = useState("editor");
+  const [blog, setBlog] = useState(blogStructure);
 
   useEffect(() => {
     const userInSession = getFromSession("user");
@@ -19,10 +32,14 @@ const App = () => {
   }, []);
 
   return (
-    <UserContext.Provider
+    <AppContext.Provider
       value={{
         userAuth,
         setUserAuth,
+        blog,
+        setBlog,
+        editorState,
+        setEditorState,
       }}
     >
       <Routes>
@@ -33,7 +50,7 @@ const App = () => {
         </Route>
       </Routes>
       <Toaster />
-    </UserContext.Provider>
+    </AppContext.Provider>
   );
 };
 
