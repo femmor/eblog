@@ -1,4 +1,4 @@
-import { useContext } from "react";
+import { useContext, useEffect } from "react";
 import { Link } from "react-router-dom";
 import AnimationWrapper from "./AnimationWrapper";
 import logo from "../images/logo.png";
@@ -6,14 +6,34 @@ import defaultBanner from "../images/blog banner.png";
 import uploadImage from "../common/aws";
 import { toast } from "react-hot-toast";
 import { AppContext } from "../App";
+import EditorJS from "@editorjs/editorjs";
+import { tools } from "../utils/Tools";
 
 const BlogEditor = () => {
   const {
     blog,
     blog: { title, banner, content, tags, desc },
     setBlog,
+    editorState,
+    setEditorState,
+    textEditor,
+    setTextEditor,
   } = useContext(AppContext);
 
+  // UseEffect for text editor
+  useEffect(() => {
+    // Create the editor
+    setTextEditor(
+      new EditorJS({
+        holder: "textEditor",
+        data: "",
+        tools: tools,
+        placeholder: "Blog post content goes here...",
+      })
+    );
+  }, []);
+
+  // Handles banner upload
   const handleBannerUpload = (e) => {
     let img = e.target.files[0];
 
@@ -37,12 +57,14 @@ const BlogEditor = () => {
     }
   };
 
+  // Handles title key down
   const handleTitleKeyDown = (e) => {
     if (e.key === "Enter") {
       e.preventDefault();
     }
   };
 
+  // Handles title change
   const handleTitleChange = (e) => {
     const input = e.target;
     input.style.height = "auto";
@@ -58,6 +80,35 @@ const BlogEditor = () => {
     img.src = defaultBanner;
   };
 
+  const handlePublish = (e) => {
+    if (!banner.length) {
+      return toast.error("Please upload a post banner.");
+    }
+
+    if (!title.length) {
+      return toast.error("Please add a post title.");
+    }
+
+    if (textEditor.isReady) {
+      textEditor
+        .save()
+        .then((data) => {
+          if (data.blocks.length) {
+            setBlog({
+              ...blog,
+              content: data,
+            });
+            setEditorState("publish");
+          } else {
+            return toast.error("Please add post content to publish it.");
+          }
+        })
+        .catch((err) => toast.error(err));
+    }
+
+    // Publish post
+  };
+
   return (
     <>
       <nav className="navbar">
@@ -68,7 +119,9 @@ const BlogEditor = () => {
           {title.length ? title : "New Blog"}
         </p>
         <div className="flex gap-4 ml-auto">
-          <button className="btn-dark py-2">Publish</button>
+          <button className="btn-dark py-2" onClick={handlePublish}>
+            Publish
+          </button>
           <button className="btn-light py-2">Save Draft</button>
         </div>
       </nav>
@@ -97,6 +150,8 @@ const BlogEditor = () => {
             ></textarea>
 
             <hr className="w-full my-5 opacity-10" />
+
+            <div id="textEditor" className="font-gelasio"></div>
           </div>
         </section>
       </AnimationWrapper>

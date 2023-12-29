@@ -21,6 +21,7 @@ const blogStructure = {
 const App = () => {
   const [userAuth, setUserAuth] = useState({});
   const [editorState, setEditorState] = useState("editor");
+  const [textEditor, setTextEditor] = useState({ isReady: false });
   const [blog, setBlog] = useState(blogStructure);
 
   useEffect(() => {
@@ -40,6 +41,8 @@ const App = () => {
         setBlog,
         editorState,
         setEditorState,
+        textEditor,
+        setTextEditor,
       }}
     >
       <Routes>
