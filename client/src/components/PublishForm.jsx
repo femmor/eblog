@@ -72,7 +72,7 @@ const PublishForm = () => {
   let CHARACTER_LIMIT = 200;
   let CHAR_REMAINING = CHARACTER_LIMIT - desc.length;
 
-  const publishPost = (e) => {
+  const handlePublishPost = (e) => {
     if (e.target.className.includes("disable")) {
       return;
     }
@@ -207,7 +207,7 @@ const PublishForm = () => {
 
           <button
             className="btn-dark px-8 mt-4"
-            onClick={publishPost}
+            onClick={handlePublishPost}
             type="submit"
           >
             Publish

@@ -42,28 +42,31 @@ const createPost = async (req, res) => {
     });
   }
 
-  if (!desc.length || desc.length > 200) {
-    return res.status(403).json({
-      error: "You must provide a description not more than 200 characters.",
-    });
-  }
+  // Don't validate entries if saving to draft
+  if (!draft) {
+    if (!banner.length) {
+      return res.status(403).json({
+        error: "Please provide a post banner",
+      });
+    }
 
-  if (!banner.length) {
-    return res.status(403).json({
-      error: "Please provide a post banner",
-    });
-  }
+    if (!desc.length || desc.length > 200) {
+      return res.status(403).json({
+        error: "You must provide a description not more than 200 characters.",
+      });
+    }
 
-  if (!content.blocks.length) {
-    return res.status(403).json({
-      error: "Please provide post content to publish it.",
-    });
-  }
+    if (!content.blocks.length) {
+      return res.status(403).json({
+        error: "Please provide post content to publish it.",
+      });
+    }
 
-  if (!tags.length || tags.length > 10) {
-    return res.status(403).json({
-      error: "Please provide post tags not more than 10.",
-    });
+    if (!tags.length || tags.length > 10) {
+      return res.status(403).json({
+        error: "Please provide post tags not more than 10.",
+      });
+    }
   }
 
   tags = tags.map((tag) => tag.toLowerCase());
