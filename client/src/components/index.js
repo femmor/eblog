@@ -18,7 +18,7 @@ export { default as NotificationCard } from "./NotificationCard";
 export { default as NotificationCommentField } from "./NotificationCommentField";
 export { default as PublishForm } from "./PublishForm";
 export { default as SideNavbar } from "./SideNavbar";
-export { default as Tags } from "./Tags";
+export { default as Tag } from "./Tag";
 export { default as UserCard } from "./UserCard";
 export { default as UserNavigation } from "./UserNavigation";
 export { default as AnimationWrapper } from "./AnimationWrapper";

@@ -14,7 +14,6 @@ const BlogEditor = () => {
     blog,
     blog: { title, banner, content, tags, desc },
     setBlog,
-    editorState,
     setEditorState,
     textEditor,
     setTextEditor,
@@ -26,7 +25,7 @@ const BlogEditor = () => {
     setTextEditor(
       new EditorJS({
         holder: "textEditor",
-        data: "",
+        data: content,
         tools: tools,
         placeholder: "Blog post content goes here...",
       })
@@ -146,7 +145,7 @@ const BlogEditor = () => {
               className="text-4xl font-medium w-full h-20 outline-none resize-none mt-10 leading-tight placeholder:opacity-40"
               onKeyDown={handleTitleKeyDown}
               onChange={handleTitleChange}
-              value={title}
+              defaultValue={title}
             ></textarea>
 
             <hr className="w-full my-5 opacity-10" />
