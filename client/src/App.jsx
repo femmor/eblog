@@ -11,8 +11,8 @@ const blogStructure = {
   title: "",
   banner: "",
   content: "",
-  tags: [],
   desc: "",
+  tags: [],
   author: {
     personalInfo: {},
   },
