@@ -1,16 +1,25 @@
-import { useContext } from "react";
+import { useContext, useRef } from "react";
 import AnimationWrapper from "./AnimationWrapper";
 import { toast } from "react-hot-toast";
 import { AppContext } from "../App";
 import Tag from "./Tag";
+import axios from "axios";
+import { useNavigate } from "react-router-dom";
 
 const PublishForm = () => {
   const {
-    blog: { banner, title, tags, desc },
+    blog: { banner, title, tags, desc, content },
     blog,
     setBlog,
     setEditorState,
+    userAuth: { access_token },
   } = useContext(AppContext);
+
+  const navigate = useNavigate();
+
+  const titleRef = useRef();
+  const descRef = useRef();
+  const tagsRef = useRef();
 
   const TAG_LIMIT = 10;
 
@@ -63,6 +72,66 @@ const PublishForm = () => {
   let CHARACTER_LIMIT = 200;
   let CHAR_REMAINING = CHARACTER_LIMIT - desc.length;
 
+  const publishPost = (e) => {
+    if (e.target.className.includes("disable")) {
+      return;
+    }
+
+    if (!title.length) {
+      titleRef.current.focus();
+      return toast.error("Please add a title");
+    }
+    if (!desc.length || desc.length > CHARACTER_LIMIT) {
+      descRef.current.focus();
+      return toast.error(
+        `Please add a description with max ${CHARACTER_LIMIT} characters`
+      );
+    }
+
+    if (!tags.length) {
+      tagsRef.current.focus();
+      return toast.error("Please add at least one tag to your post");
+    }
+
+    let loadingToast = toast.loading("Publishing...");
+
+    e.target.classList.add("disable");
+
+    let blogObject = {
+      title,
+      banner,
+      tags,
+      desc,
+      content,
+      draft: false,
+    };
+
+    axios
+      .post(
+        `${import.meta.env.VITE_SERVER_DOMAIN}/post/create-post`,
+        blogObject,
+        {
+          headers: {
+            Authorization: `Bearer ${access_token}`,
+          },
+        }
+      )
+      .then(() => {
+        e.target.classList.remove("disable");
+        toast.dismiss(loadingToast);
+        toast.success("Post published!");
+
+        setTimeout(() => {
+          navigate("/");
+        }, 500);
+      })
+      .catch(({ response }) => {
+        e.target.classList.remove("disable");
+        toast.dismiss(loadingToast);
+        return toast.error(response.data.error);
+      });
+  };
+
   return (
     <AnimationWrapper>
       <section className="w-screen min-h-screen grid items-center lg:grid-cols-2 py-16 lg:gap-4">
@@ -94,6 +163,7 @@ const PublishForm = () => {
             placeholder="Blog Title"
             defaultValue={title}
             onChange={handleBlogTitleChange}
+            ref={titleRef}
           />
           <p className="text-dark-grey mb-2 mt-9">
             Short description about your post
@@ -104,6 +174,7 @@ const PublishForm = () => {
             defaultValue={desc}
             onChange={handleBlogDescChange}
             onKeyDown={handleDescKeyDown}
+            ref={descRef}
           ></textarea>
 
           <p
@@ -124,6 +195,7 @@ const PublishForm = () => {
               placeholder="Topic"
               className="sticky input-box bg-white top-0 left-0 pl-4 mb-3 focus:bg-white"
               onKeyDown={handleTagKeyDown}
+              ref={tagsRef}
             />
             {tags.map((tag, idx) => {
               return <Tag tag={tag} tagIndex={idx} key={idx} />;
@@ -133,7 +205,13 @@ const PublishForm = () => {
             {TAG_LIMIT - tags.length} tags left
           </p>
 
-          <button className="btn-dark px-8 mt-4">Publish</button>
+          <button
+            className="btn-dark px-8 mt-4"
+            onClick={publishPost}
+            type="submit"
+          >
+            Publish
+          </button>
         </div>
       </section>
     </AnimationWrapper>
