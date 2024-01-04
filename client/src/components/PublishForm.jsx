@@ -127,9 +127,12 @@ const PublishForm = () => {
               onKeyDown={handleTagKeyDown}
             />
             {tags.map((tag, idx) => {
-              return <Tag tag={tag} key={idx} />;
+              return <Tag tag={tag} tagIndex={idx} key={idx} />;
             })}
           </div>
+          <p className="mt-1 text-dark-grey text-sm text-right">
+            {TAG_LIMIT - tags.length} tags left
+          </p>
         </div>
       </section>
     </AnimationWrapper>
