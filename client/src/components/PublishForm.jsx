@@ -52,12 +52,11 @@ const PublishForm = () => {
             ...blog,
             tags: [...tags, tag],
           });
-
-          e.target.value = "";
         }
       } else {
-        return toast.error(`You can only add max ${TAG_LIMIT} tags.`);
+        toast.error(`You can only add max ${TAG_LIMIT} tags.`);
       }
+      e.target.value = "";
     }
   };
 
@@ -80,7 +79,7 @@ const PublishForm = () => {
             <img src={banner} alt="post banner" />
           </div>
 
-          <h1 className="">{title}</h1>
+          <h1 className="text-3xl">{title}</h1>
 
           <p className="font-gelasio line-clamp-2 text-xl leading-7 mt-4">
             {desc}
@@ -133,6 +132,8 @@ const PublishForm = () => {
           <p className="mt-1 text-dark-grey text-sm text-right">
             {TAG_LIMIT - tags.length} tags left
           </p>
+
+          <button className="btn-dark px-8 mt-4">Publish</button>
         </div>
       </section>
     </AnimationWrapper>
