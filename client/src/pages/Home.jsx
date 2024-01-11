@@ -9,7 +9,11 @@ const Home = () => {
           <InPageNavigation
             routes={["home", "trending posts"]}
             defaultHidden={["trending posts"]}
-          ></InPageNavigation>
+            defaultActiveIndex={0}
+          >
+            <h1>Latest Posts</h1>
+            <h1>Trending Posts</h1>
+          </InPageNavigation>
         </div>
         {/* Filters and Trending posts */}
         <div className=""></div>
