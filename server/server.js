@@ -5,6 +5,7 @@ import morgan from "morgan";
 import cors from "cors";
 import admin from "firebase-admin";
 import serviceAccountKey from "./eblog-c9db6-firebase-adminsdk-y3ld0-2ee4640f9e.json" assert { type: "json" };
+import treblle from "@treblle/express";
 
 // Route imports
 import authRoutes from "./routes/auth/index.js";
@@ -20,6 +21,13 @@ connectDB();
 app.use(cors());
 app.use(express.json());
 app.use(morgan("dev"));
+app.use(
+  treblle({
+    apiKey: process.env.TREBLLE_API_KEY,
+    projectId: process.env.TREBLLE_PROJECT_ID,
+    additionalFieldsToMask: [],
+  })
+);
 
 // Routes
 app.use("/api/v1/auth", authRoutes);
