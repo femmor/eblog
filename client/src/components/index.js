@@ -6,7 +6,7 @@ export { default as BlogPost } from "./BlogPost";
 export { default as CommentCard } from "./CommentCard";
 export { default as CommentField } from "./CommentField";
 export { default as Comments } from "./Comments";
-export { default as InpageNavigation } from "./InpageNavigation";
+export { default as InPageNavigation } from "./InPageNavigation";
 export { default as Input } from "./Input";
 export { default as Loader } from "./Loader";
 export { default as LoadMore } from "./LoadMore";
