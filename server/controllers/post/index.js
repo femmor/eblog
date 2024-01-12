@@ -4,6 +4,37 @@ import Blog from "../../Schema/Blog.js";
 import User from "../../Schema/User.js";
 
 /* 
+    @title Get latest posts
+    @route GET /api/v1/post/latest-posts
+    @desc Gets the latest posts
+    @access Public
+*/
+const getLatestPosts = (req, res) => {
+  let MAX_LIMIT = 5;
+
+  Blog.find({
+    draft: false,
+  })
+    .populate(
+      "author",
+      "personalInfo.profileImg personalInfo.username personalInfo.fullName -_id"
+    )
+    .sort({ publishedAt: -1 })
+    .select("blogId title desc banner activity tags publishedAt -_id")
+    .limit(MAX_LIMIT)
+    .then((blogs) => {
+      return res.status(200).json({
+        blogs,
+      });
+    })
+    .catch((err) => {
+      return res.status(500).json({
+        error: err.message,
+      });
+    });
+};
+
+/* 
     @title Image Upload Url
     @route GET /api/v1/post/image-upload-url
     @desc Gets the aws image upload url
@@ -123,4 +154,4 @@ const createPost = async (req, res) => {
     });
 };
 
-export { getImageUploadUrl, createPost };
+export { getLatestPosts, getImageUploadUrl, createPost };
