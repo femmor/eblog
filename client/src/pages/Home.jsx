@@ -1,5 +1,10 @@
 import axios from "axios";
-import { AnimationWrapper, InPageNavigation, Loader } from "../components";
+import {
+  AnimationWrapper,
+  BlogPost,
+  InPageNavigation,
+  Loader,
+} from "../components";
 import { useEffect, useState } from "react";
 
 const Home = () => {
@@ -36,8 +41,20 @@ const Home = () => {
                 <Loader />
               ) : (
                 blogs.map((blog, idx) => {
-                  const { title } = blog;
-                  return <h1 key={idx}>{title}</h1>;
+                  return (
+                    <AnimationWrapper
+                      key={idx}
+                      transition={{
+                        duration: 1,
+                        delay: idx * 0.1,
+                      }}
+                    >
+                      <BlogPost
+                        content={blog}
+                        author={blog.author.personalInfo}
+                      />
+                    </AnimationWrapper>
+                  );
                 })
               )}
             </>
